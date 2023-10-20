@@ -1,0 +1,22 @@
+{
+  "name": "mugshop-backend",
+  "version": "1.0.0",
+  "description": "MugShop Backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "tes"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatiasCuneo/MugShop-BackEnd.git"
+  },
+  "keywords": [
+    "mugshop"
+  ],
+  "author": "Cuneo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatiasCuneo/MugShop-BackEnd/issues"
+  },
+  "homepage": "https://github.com/MatiasCuneo/MugShop-BackEnd#readme"
+}
