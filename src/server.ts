@@ -4,8 +4,8 @@ import routes from "./router/routes"
 const app = express();
 const port = 8080;
 
-app.use('/', routes)
+app.use('/', routes);
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port http://localhost:${port}`);
 });
