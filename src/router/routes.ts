@@ -16,14 +16,32 @@ router.get('/mayora100', (_, res) => {
     res.json(products.filter(producto => producto.precio > 100));
 });
 
-router.get('/borrar/:modelo', (req, _) => {
-    const { modelo } = req.params;
-    console.log(modelo);
-    const i = products.findIndex(producto => producto.modelo === modelo);
-    console.log(i);
+router.put('/modif/:nombre', (req, res) => {
+    const { nombre } = req.params;
+    const { modeloNew, paisNew, precioNew} = req.body;
 
-    if (i >= 0) {
+    const i = products.findIndex(producto => producto.nombre === nombre);
+
+    if (i !== -1) {
+        products[i].modelo = modeloNew;
+        products[i].pais = paisNew;
+        products[i].precio = precioNew;
+
+        res.status(201).json(products);
+    } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
+    }
+});
+
+router.delete('/borrar/:modelo', (req, res) => {
+    const { modelo } = req.params;
+    const i = products.findIndex(producto => producto.modelo === modelo);
+
+    if (i !== -1) {
         products.splice(i, 1);
+        res.json(products);
+    } else {
+        res.status(404).json({ message: 'Producto no encontrado' });
     }
 });
 
@@ -49,6 +67,15 @@ router.get('/productos/precio/:precioFind', (req, res) => {
     } else {
         res.send('Producto no encontrado');
     }
+});
+
+router.post('/agregar', (req, res) => {
+    const { nombreNew, modeloNew, paisNew, precioNew } = req.body;
+    const newProduct = {nombre:nombreNew, modelo:modeloNew, pais:paisNew, precio:precioNew};
+
+    products.push(newProduct);
+
+    res.status(201).send(products);
 });
 
 export default router;
