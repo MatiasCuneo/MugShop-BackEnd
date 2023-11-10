@@ -6,14 +6,9 @@ import { borrar } from '../controller/contollers';
 import { paisOrigen } from '../controller/contollers';
 import { precio } from '../controller/contollers';
 import { add } from '../controller/contollers';
+import products from '../controller/contollers';
 
 const router: Router = Router();
-
-const products = [
-    {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
-    {nombre:"Jarrito", modelo:"Hondo", pais:"Italia", precio:20},
-    {nombre:"Disco", modelo:"Acero", pais:"Argentina", precio:120}
-]; 
 
 router.get('/', (_, res) => {
     showProducts(_, res, products);

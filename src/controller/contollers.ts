@@ -1,6 +1,14 @@
 import { Response } from 'express';
 import { Request } from 'express';
 
+const products = [
+    {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
+    {nombre:"Jarrito", modelo:"Hondo", pais:"Italia", precio:20},
+    {nombre:"Disco", modelo:"Acero", pais:"Argentina", precio:120}
+]; 
+
+export default products;
+
 export function showProducts(_: any, res: Response, arrays: { nombre: string; modelo: string; pais: string; precio: number; }[]) {
     res.json(arrays);
 }
