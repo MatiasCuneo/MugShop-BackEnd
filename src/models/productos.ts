@@ -4,17 +4,17 @@ import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export default class Producto {
     @PrimaryGeneratedColumn()
-    id: number
+    id!: number
 
     @Column({ length: 100 })
-    nombre: string
+    nombre!: string
 
     @Column({ length: 100 })
-    modelo: string
+    modelo!: string
 
     @Column({ length: 100 })
-    pais: string
+    pais!: string
 
     @Column("double")
-    precio: number
+    precio!: number
 }

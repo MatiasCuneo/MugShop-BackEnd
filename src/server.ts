@@ -2,7 +2,7 @@ import express from 'express';
 import routes from "./router/routes"
 import "reflect-metadata";
 import Producto from './models/productos';
-import { AppDataSource } from './config';
+// import { AppDataSource } from './config';
 
 const app = express();
 const port = 8080;
@@ -20,4 +20,4 @@ producto.modelo = "Pequeña";
 producto.pais = "Camboya";
 producto.precio = 54.99;
 
-await AppDataSource.manager.save(producto);
+// await AppDataSource.manager.save(producto);

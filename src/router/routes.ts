@@ -1,4 +1,11 @@
 import { Router } from 'express';
+import { showProducts } from '../controller/contollers';
+import { filter } from '../controller/contollers';
+import { modify } from '../controller/contollers';
+import { borrar } from '../controller/contollers';
+import { paisOrigen } from '../controller/contollers';
+import { precio } from '../controller/contollers';
+import { add } from '../controller/contollers';
 
 const router: Router = Router();
 
@@ -9,73 +16,31 @@ const products = [
 ]; 
 
 router.get('/', (_, res) => {
-    res.json(products);
+    showProducts(_, res, products);
 });
 
 router.get('/mayora100', (_, res) => {
-    res.json(products.filter(producto => producto.precio > 100));
+    filter(_, res, products);
 });
 
 router.put('/modif/:nombre', (req, res) => {
-    const { nombre } = req.params;
-    const { modeloNew, paisNew, precioNew} = req.body;
-
-    const i = products.findIndex(producto => producto.nombre === nombre);
-
-    if (i !== -1) {
-        products[i].modelo = modeloNew;
-        products[i].pais = paisNew;
-        products[i].precio = precioNew;
-
-        res.status(201).json(products);
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
-    }
+    modify(req, res, products);
 });
 
 router.delete('/borrar/:modelo', (req, res) => {
-    const { modelo } = req.params;
-    const i = products.findIndex(producto => producto.modelo === modelo);
-
-    if (i !== -1) {
-        products.splice(i, 1);
-        res.json(products);
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
-    }
+    borrar(req, res, products);
 });
 
 router.get('/productos/pais/:paisOrigen', (req, res) => {
-    const { paisOrigen } = req.params;
-    const producto = products.find(producto => producto.pais === paisOrigen);
-
-    if (producto) {
-        res.json(producto);
-    } else {
-        res.status(404).json({ message: 'Producto no encontrado' });
-    }
+    paisOrigen(req, res, products);
 });
 
 router.get('/productos/precio/:precioFind', (req, res) => {
-    const { precioFind } = req.params;
-    const price = parseInt(precioFind);
-
-    const producto = products.filter(producto => producto.precio === price);
-
-    if (producto) {
-        res.json(producto);
-    } else {
-        res.send('Producto no encontrado');
-    }
+    precio(req, res, products);
 });
 
 router.post('/agregar', (req, res) => {
-    const { nombreNew, modeloNew, paisNew, precioNew } = req.body;
-    const newProduct = {nombre:nombreNew, modelo:modeloNew, pais:paisNew, precio:precioNew};
-
-    products.push(newProduct);
-
-    res.status(201).send(products);
+    add(req, res, products);
 });
 
 export default router;
