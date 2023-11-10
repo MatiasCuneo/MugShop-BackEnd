@@ -4,11 +4,11 @@ import Producto from './models/productos'
 
 export const AppDataSource = new DataSource({
     type: "mysql",
-    host: "lcalhost",
+    host: "localhost",
     port: 8080,
     username: "Cuneo",
     password: "Cuneo",
-    database: "productos",
+    database: "Productos",
     synchronize: true,
     logging: true,
     entities: [],
@@ -34,18 +34,10 @@ producto3.modelo = "Acero";
 producto3.pais = "Argentina";
 producto3.precio = 120;
 
-async function saveProduct1() {
+async function saveProducts() {
     await AppDataSource.manager.save(producto1);
-}
-
-async function saveProduct2() {
+    await AppDataSource.manager.save(producto3);
     await AppDataSource.manager.save(producto3);
 }
 
-async function saveProduct3() {
-    await AppDataSource.manager.save(producto3);
-}
-
-saveProduct1();
-saveProduct2();
-saveProduct3();
+saveProducts();
