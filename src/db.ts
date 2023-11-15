@@ -1,6 +1,8 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import Producto from './models/productos'
+import User from './models/user';
+import Cart from './models/carrito';
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -11,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "Productos",
     synchronize: true,
     logging: true,
-    entities: [],
+    entities: [Producto, User, Cart],
     subscribers: [],
     migrations: []
 });

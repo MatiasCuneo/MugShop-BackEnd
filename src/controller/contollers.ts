@@ -1,5 +1,7 @@
 import { Response } from 'express';
 import { Request } from 'express';
+import { getRepository } from 'typeorm';
+import User from '../models/user';
 
 const products = [
     {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
@@ -78,3 +80,20 @@ export function add(req: Request, res: Response, arrays: { nombre: string; model
 
     res.status(201).send(arrays);
 }
+
+// ================================================================
+
+export const registerUser = async (req: Request, res: Response) => {
+    const userRepository = getRepository(User);
+    const { usuario, email, password } = req.body;
+
+    const newUser = userRepository.create({
+        usuario,
+        email,
+        password
+    });
+
+    await userRepository.save(newUser);
+
+    return res.status(201).json({ message: 'Usuario registrado exitosamente' });
+};
