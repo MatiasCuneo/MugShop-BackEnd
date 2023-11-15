@@ -1,6 +1,5 @@
 import { Response } from 'express';
 import { Request } from 'express';
-import { getRepository } from 'typeorm';
 import User from '../models/user';
 
 const products = [
@@ -83,17 +82,70 @@ export function add(req: Request, res: Response, arrays: { nombre: string; model
 
 // ================================================================
 
-export const registerUser = async (req: Request, res: Response) => {
-    const userRepository = getRepository(User);
-    const { usuario, email, password } = req.body;
+const users: User[] = [];
 
-    const newUser = userRepository.create({
-        usuario,
-        email,
-        password
+export const registerUser = (req: Request, res: Response) => {
+    const { usuario, email, password, password2 } = req.body;
+
+    if (usuario == null || password == null) {
+        return res.status(400).json({ msg: "El usuario y contraseña son obligarotios" });
+    }
+
+    let existUser = false;
+
+    users.forEach((e) => {
+        if (usuario == e.usuario) {
+            existUser = true;
+            return;
+        }
     });
 
-    await userRepository.save(newUser);
+    if (existUser) {
+        return res.status(400).json({ msg: "El usuario ya esta en uso" });
+    }
 
-    return res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    if (password !== password2) {
+        return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+    }
+
+    const user = new User(usuario, email, password);
+
+    users.push(user);
+
+    return res.status(201).json({
+        msg: "Usuario creado exitosamente",
+        user
+    });
+};
+
+export const loginUser = (req: Request, res: Response) => {
+    const {usuario, password} = req.body;
+
+    if (usuario == null || password == null) {
+        return res.status(400).json({ msg: "El usuario y contaseña son obligatorios" });
+    }
+
+    let existUser = false;
+
+    users.forEach((e) => {
+        if (usuario == e.usuario) {
+            existUser = true;
+            return;
+        }
+    });
+
+    if (existUser) {
+        users.forEach((e) => {
+            if (password != e.password) {
+                return res.status(400).json({ msg: "La contraseña es incorrecta"});
+            } else {
+                return res.status(201).json({
+                    msg: "Ingreso correcto",
+                    usuario
+                });
+            }
+        });
+    }
+
+    return res.status(400).json({ msg: "Error al ingresar" });
 };

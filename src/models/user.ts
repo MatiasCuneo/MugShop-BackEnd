@@ -1,16 +1,23 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column } from "typeorm";
 
 @Entity()
 export default class User {
-    @PrimaryGeneratedColumn()
-    id!: number;
+    // @PrimaryGeneratedColumn()
+    // id: number;
 
     @Column({ length: 100 })
-    usuario!: string;
+    public readonly usuario: string;
 
     @Column({ length: 100 })
-    email!: string;
+    public readonly email: string;
     
     @Column({ length: 50 })
-    password!: string;
+    public readonly password: string;
+
+    constructor(usuario: string, email: string, password: string) {
+        // this.id = id;
+        this.usuario = usuario,
+        this.email = email,
+        this.password = password
+    }
 }
