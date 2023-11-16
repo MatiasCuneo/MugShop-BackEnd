@@ -5,15 +5,22 @@ export default class Producto {
     @PrimaryGeneratedColumn()
     id!: number
 
-    @Column({ length: 100 })
-    nombre!: string
+    @Column({ length: 45 })
+    nombre: string
 
-    @Column({ length: 100 })
-    modelo!: string
+    @Column({ length: 45 })
+    modelo: string
 
-    @Column({ length: 100 })
-    pais!: string
+    @Column({ length: 45 })
+    pais: string
 
     @Column("double")
-    precio!: number
+    precio: number
+
+    constructor(nombre: string, modelo: string, pais: string, precio: number) {
+        this.nombre = nombre;
+        this.modelo = modelo;
+        this.pais = pais;
+        this.precio = precio;
+    }
 }

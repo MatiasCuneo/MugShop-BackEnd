@@ -8,9 +8,9 @@ createConnection({
     type: "mysql",
     host: "localhost",
     port: 3306,
-    username: "Cuneo",
-    password: "Cuneo",
-    database: "MugShop",
+    username: "root",
+    password: "root",
+    database: "mugshop",
     synchronize: true,
     logging: true,
     entities: [Producto, User, Cart],
@@ -19,32 +19,21 @@ createConnection({
 })
     .then(async (connection) => {
         // ========== PRODUCTS ==========
-        const producto1 = new Producto();
-        producto1.nombre = "Taza";
-        producto1.modelo = "Grande";
-        producto1.pais = "Tailandia";
-        producto1.precio = 50;
+        const producto1 = new Producto("Taza", "Grande", "Tailandia", 50);
+        const producto2 = new Producto("Jarrito", "Hondo", "Italia", 20);
+        const producto3 = new Producto("Disco", "Acero", "Argentina", 120);
 
-        const producto2 = new Producto();
-        producto2.nombre = "Jarrito";
-        producto2.modelo = "Hondo";
-        producto2.pais = "Italia";
-        producto2.precio = 20;
+        // await connection.manager.save(producto1);
+        // await connection.manager.save(producto2);
+        // await connection.manager.save(producto3);
 
-        const producto3 = new Producto();
-        producto3.nombre = "Disco";
-        producto3.modelo = "Acero";
-        producto3.pais = "Argentina";
-        producto3.precio = 120;
-
-        await connection.manager.save(producto1);
-        await connection.manager.save(producto2);
-        await connection.manager.save(producto3);    
+        await connection.transaction(async (transactionalEntityManager) => {
+            await transactionalEntityManager.save(producto1);
+            await transactionalEntityManager.save(producto2);
+            await transactionalEntityManager.save(producto3);
+        });
 
         // ========== REGISTER ==========
-
-
-        // ========== LOGIN ==========
 
         console.log("Base inicializada correctamente");
 

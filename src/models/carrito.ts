@@ -5,6 +5,10 @@ export default class Cart {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column()
-    cart!: Object;
+    @Column({ type: "json" })
+    cart: object;
+
+    constructor(cart: object) {
+        this.cart = cart;
+    }
 }
