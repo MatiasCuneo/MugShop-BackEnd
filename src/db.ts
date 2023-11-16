@@ -23,17 +23,11 @@ createConnection({
         const producto2 = new Producto("Jarrito", "Hondo", "Italia", 20);
         const producto3 = new Producto("Disco", "Acero", "Argentina", 120);
 
-        // await connection.manager.save(producto1);
-        // await connection.manager.save(producto2);
-        // await connection.manager.save(producto3);
-
         await connection.transaction(async (transactionalEntityManager) => {
             await transactionalEntityManager.save(producto1);
             await transactionalEntityManager.save(producto2);
             await transactionalEntityManager.save(producto3);
         });
-
-        // ========== REGISTER ==========
 
         console.log("Base inicializada correctamente");
 

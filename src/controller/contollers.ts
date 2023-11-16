@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Request } from 'express';
 import User from '../models/user';
-import { createConnection } from 'typeorm';
+import { createConnection, getRepository } from 'typeorm';
 
 const products = [
     {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
@@ -83,41 +83,67 @@ export function add(req: Request, res: Response, arrays: { nombre: string; model
 
 // ================================================================
 
-const users: User[] = [];
+// const users: User[] = [];
 
-export const registerUser = (req: Request, res: Response) => {
-    const { usuario, email, password, password2 } = req.body;
+// export const registerUser = (req: Request, res: Response) => {
+//     const { usuario, email, password, password2 } = req.body;
 
-    if (usuario == null || password == null) {
-        return res.status(400).json({ msg: "El usuario y contraseña son obligarotios" });
+//     if (usuario == null || password == null) {
+//         return res.status(400).json({ msg: "El usuario y contraseña son obligarotios" });
+//     }
+
+//     let existUser = false;
+
+//     users.forEach((e) => {
+//         if (usuario == e.usuario) {
+//             existUser = true;
+//             return;
+//         }
+//     });
+
+//     if (existUser) {
+//         return res.status(400).json({ msg: "El usuario ya esta en uso" });
+//     }
+
+//     if (password !== password2) {
+//         return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+//     }
+
+//     const user = new User(usuario, email, password);
+
+//     users.push(user);
+
+//     return res.status(201).json({
+//         msg: "Usuario creado exitosamente",
+//         user
+//     });
+// };
+
+export const registerUser = async (req: Request, res: Response) => {
+    const { usuario, email, password } = req.body;
+
+    const userRepository = getRepository(User);
+
+    const existingUser = await userRepository.findOne({ where: [{ usuario }, { email }] });
+    if (existingUser) {
+        return res.status(400).json({ error: 'El Usuario o Email ya esta en uso' });
     }
 
-    let existUser = false;
-
-    users.forEach((e) => {
-        if (usuario == e.usuario) {
-            existUser = true;
-            return;
-        }
+    const newUser = userRepository.create({
+        usuario,
+        email,
+        password,
     });
 
-    if (existUser) {
-        return res.status(400).json({ msg: "El usuario ya esta en uso" });
+    try {
+        await userRepository.save(newUser);
+        return res.status(201).json({ message: 'Usuario registrado exitosamente' });
+    } catch (error) {
+        console.error('Error al registrar el usuario:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    if (password !== password2) {
-        return res.status(400).json({ msg: "Las contraseñas no coinciden" });
-    }
-
-    const user = new User(usuario, email, password);
-
-    users.push(user);
-
-    return res.status(201).json({
-        msg: "Usuario creado exitosamente",
-        user
-    });
 };
+
 
 export const loginUser = async (req: Request, res: Response) => {
     const [usuario, password] = req.body;
