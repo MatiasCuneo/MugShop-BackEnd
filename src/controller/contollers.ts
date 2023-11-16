@@ -1,6 +1,7 @@
 import { Response } from 'express';
 import { Request } from 'express';
 import User from '../models/user';
+import { createConnection } from 'typeorm';
 
 const products = [
     {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
@@ -118,34 +119,32 @@ export const registerUser = (req: Request, res: Response) => {
     });
 };
 
-export const loginUser = (req: Request, res: Response) => {
-    const {usuario, password} = req.body;
+export const loginUser = async (req: Request, res: Response) => {
+    const [usuario, password] = req.body;
 
-    if (usuario == null || password == null) {
-        return res.status(400).json({ msg: "El usuario y contaseña son obligatorios" });
-    }
+    try {
+        const connection = await createConnection();
 
-    let existUser = false;
+        const user = await connection.manager.findOne(User, { where: { usuario, password } });
 
-    users.forEach((e) => {
-        if (usuario == e.usuario) {
-            existUser = true;
-            return;
+        await connection.close();
+
+        if (user) {
+            res.json({
+                success: true,
+                msg: "Ingreso correcto"
+            });
+        } else {
+            res.status(401).json({
+                success: false,
+                msg: "Ingreso fallido"
+            });
         }
-    });
-
-    if (existUser) {
-        users.forEach((e) => {
-            if (password != e.password) {
-                return res.status(400).json({ msg: "La contraseña es incorrecta"});
-            } else {
-                return res.status(201).json({
-                    msg: "Ingreso correcto",
-                    usuario
-                });
-            }
+    } catch (err) {
+        console.log("Error al ingresar: ", err);
+        res.status(500).json({
+            success: false,
+            msg: "Error al ingresar"
         });
     }
-
-    return res.status(400).json({ msg: "Error al ingresar" });
 };

@@ -1,11 +1,5 @@
 import { Router } from 'express';
-import { showProducts } from '../controller/contollers';
-import { filter } from '../controller/contollers';
-import { modify } from '../controller/contollers';
-import { borrar } from '../controller/contollers';
-import { paisOrigen } from '../controller/contollers';
-import { precio } from '../controller/contollers';
-import { add } from '../controller/contollers';
+import { showProducts, filter, modify, borrar, paisOrigen, precio, add, loginUser } from '../controller/contollers';
 import products from '../controller/contollers';
 
 const router: Router = Router();
@@ -36,6 +30,10 @@ router.get('/productos/precio/:precioFind', (req, res) => {
 
 router.post('/agregar', (req, res) => {
     add(req, res, products);
+});
+
+router.post('/login/try', (req, res) => {
+    loginUser(req, res);
 });
 
 export default router;

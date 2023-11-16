@@ -1,25 +1,24 @@
 import "reflect-metadata";
-import { DataSource } from "typeorm";
+import { createConnection } from "typeorm";
 import Producto from './models/productos'
 import User from './models/user';
 import Cart from './models/carrito';
 
-export const AppDataSource = new DataSource({
+createConnection({
     type: "mysql",
     host: "localhost",
-    port: 8080,
+    port: 3306,
     username: "Cuneo",
     password: "Cuneo",
-    database: "Productos",
+    database: "MugShop",
     synchronize: true,
     logging: true,
     entities: [Producto, User, Cart],
     subscribers: [],
     migrations: []
-});
-
-AppDataSource.initialize()
-    .then(() => {
+})
+    .then(async (connection) => {
+        // ========== PRODUCTS ==========
         const producto1 = new Producto();
         producto1.nombre = "Taza";
         producto1.modelo = "Grande";
@@ -38,15 +37,18 @@ AppDataSource.initialize()
         producto3.pais = "Argentina";
         producto3.precio = 120;
 
-        async function saveProducts() {
-            await AppDataSource.manager.save(producto1);
-            await AppDataSource.manager.save(producto2);
-            await AppDataSource.manager.save(producto3);    
-        }
+        await connection.manager.save(producto1);
+        await connection.manager.save(producto2);
+        await connection.manager.save(producto3);    
 
-        saveProducts();
+        // ========== REGISTER ==========
+
+
+        // ========== LOGIN ==========
 
         console.log("Base inicializada correctamente");
+
+        await connection.close();
     }).catch((error) => {
         console.log("Error al inicializar la base: ", error)
     });
