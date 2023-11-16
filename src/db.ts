@@ -19,15 +19,16 @@ createConnection({
 })
     .then(async (connection) => {
         // ========== PRODUCTS ==========
-        const producto1 = new Producto("Taza", "Grande", "Tailandia", 50);
-        const producto2 = new Producto("Jarrito", "Hondo", "Italia", 20);
-        const producto3 = new Producto("Disco", "Acero", "Argentina", 120);
+        const productRepository = connection.getRepository(Producto);
+        const existingProducts = await productRepository.find();
 
-        await connection.transaction(async (transactionalEntityManager) => {
-            await transactionalEntityManager.save(producto1);
-            await transactionalEntityManager.save(producto2);
-            await transactionalEntityManager.save(producto3);
-        });
+        if (existingProducts.length === 0) {
+            const producto1 = new Producto("Taza", "Grande", "Tailandia", 50);
+            const producto2 = new Producto("Jarrito", "Hondo", "Italia", 20);
+            const producto3 = new Producto("Disco", "Acero", "Argentina", 120);
+
+            await productRepository.save([producto1, producto2, producto3]);
+        }
 
         console.log("Base inicializada correctamente");
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { showProducts, filter, modify, borrar, paisOrigen, precio, add, loginUser } from '../controller/contollers';
+import { showProducts, filter, modify, borrar, paisOrigen, precio, add, loginUser, registerUser } from '../controller/contollers';
 import products from '../controller/contollers';
 
 const router: Router = Router();
@@ -35,5 +35,7 @@ router.post('/agregar', (req, res) => {
 router.post('/login/try', (req, res) => {
     loginUser(req, res);
 });
+
+router.post('/register/success', registerUser);
 
 export default router;
