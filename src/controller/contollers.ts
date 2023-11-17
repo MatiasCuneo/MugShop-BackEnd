@@ -82,19 +82,23 @@ export function add(req: Request, res: Response, arrays: { nombre: string; model
 }
 
 export const registerUser = async (req: Request, res: Response) => {
-    const { usuario, email, password } = req.body;
+    const { usuario, email, password, password2 } = req.body;
 
     try {
         const connection = await createConnection();
 
+        if (password !== password2) {
+            return res.status(403).json({ msg: "Las contrasenas deben ser coincidentes" });
+        }
+
         const existingUser = await connection.manager.findOne(User, { where: { usuario, email } });
+
         if (existingUser) {
             return res.status(400).json({ error: 'El Usuario o Email ya esta en uso' });
         } else {
             const newUser = new User(usuario, email, password);
 
             try {
-
                 await connection.manager.save(newUser);
                 await connection.close();
 
