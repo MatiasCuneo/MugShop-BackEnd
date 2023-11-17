@@ -1,7 +1,16 @@
 import { Response } from 'express';
 import { Request } from 'express';
 import User from '../models/user';
-import { createConnection } from 'typeorm';
+import { createConnection, Connection } from 'typeorm';
+
+let connection: Connection | null = null;
+
+export const getDatabaseConnection = async (): Promise<Connection> => {
+  if (!connection || !connection.isConnected) {
+    connection = await createConnection();
+  }
+  return connection;
+};
 
 const products = [
     {nombre:"Taza", modelo:"Grande", pais:"Tailandia", precio:50},
@@ -85,7 +94,7 @@ export const registerUser = async (req: Request, res: Response) => {
     const { usuario, email, password, password2 } = req.body;
 
     try {
-        const connection = await createConnection();
+        const connection = await getDatabaseConnection();
 
         if (password !== password2) {
             return res.status(403).json({ msg: "Las contrasenas deben ser coincidentes" });
@@ -117,10 +126,10 @@ export const registerUser = async (req: Request, res: Response) => {
 
 
 export const loginUser = async (req: Request, res: Response) => {
-    const [usuario, password] = req.body;
+    const { usuario, password } = req.body;
 
     try {
-        const connection = await createConnection();
+        const connection = await getDatabaseConnection();
 
         const user = await connection.manager.findOne(User, { where: { usuario, password } });
 
