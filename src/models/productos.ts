@@ -9,18 +9,22 @@ export default class Producto {
     nombre: string
 
     @Column({ length: 45 })
-    modelo: string
+    desc: string
 
     @Column({ length: 45 })
-    pais: string
+    category: string
 
     @Column("double")
     precio: number
 
-    constructor(nombre: string, modelo: string, pais: string, precio: number) {
+    @Column({ length: 200 })
+    image: string
+
+    constructor(nombre: string, desc: string, category: string, precio: number, image: string) {
         this.nombre = nombre;
-        this.modelo = modelo;
-        this.pais = pais;
+        this.desc = desc;
+        this.category = category;
         this.precio = precio;
+        this.image = image;
     }
 }

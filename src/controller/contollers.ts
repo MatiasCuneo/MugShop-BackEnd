@@ -96,3 +96,7 @@ export const registerCart = async (req: Request, res: Response) => {
         return res.status(500).json({ error: 'Error interno del servidor' });
     }  
 };
+
+// export const retrieveProducts = async (req: Request, res: Response) => {
+//     const query = 
+// }
