@@ -2,6 +2,7 @@ import { Response } from 'express';
 import { Request } from 'express';
 import User from '../models/user';
 import Cart from '../models/carrito';
+import Producto from '../models/productos';
 import { createConnection, Connection } from 'typeorm';
 
 let connection: Connection | null = null;
@@ -14,14 +15,14 @@ export const getDatabaseConnection = async (): Promise<Connection> => {
 };
 
 export const registerUser = async (req: Request, res: Response) => {
-    const { usuario, email, password, password2 } = req.body;
+    const { formData } = req.body;
+
+    const usuario = formData.usuario;
+    const email = formData.email;
+    const password = formData.password;
 
     try {
         const connection = await getDatabaseConnection();
-
-        if (password !== password2) {
-            return res.status(403).json({ msg: "Las contrasenas deben ser coincidentes" });
-        }
 
         const existingUser = await connection.manager.findOne(User, { where: { usuario, email } });
 
@@ -97,6 +98,17 @@ export const registerCart = async (req: Request, res: Response) => {
     }  
 };
 
-// export const retrieveProducts = async (req: Request, res: Response) => {
-//     const query = 
-// }
+export const retrieveProducts = async (_: any, res: Response) => {
+    try {
+        const connection = await createConnection();
+        const productRepository = connection.getRepository(Producto);
+        const existingProducts = await productRepository.find();
+
+        await connection.close();
+
+        res.json(existingProducts);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+}
